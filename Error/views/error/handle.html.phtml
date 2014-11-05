@@ -1,2 +1,6 @@
 <h1>An error has occurred</h1>
 <h3><?=$this->get("message", "Unknown")?></h3>
+
+<pre><?php echo $this->get("traceString"); ?></pre>
+
+<pre><?php print_r($this->app->logs()); ?></pre>

@@ -16,7 +16,7 @@ implements ProviderInterface
 			2 => "controller",
 			3 => "action",
 			4 => "format"
-		]);
+		], [], -1);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ implements ProviderInterface
 		if ($result === null) {
 			throw new \Exception("Could not find a matching route for '{$test}'", 404);
 		} else {
-			$this->app->log("Route found using: ". $route->route());
+			$this->app->log("Route found using: ". $result->route());
 		}
 		
 		return $result;

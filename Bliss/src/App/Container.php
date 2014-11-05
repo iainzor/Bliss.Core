@@ -142,6 +142,7 @@ class Container
 	 */
 	public function handleError($number, $string, $file, $line) 
 	{
+		$this->log("ERROR: {$string}");
 		$this->error()->handleError($number, $string, $file, $line);
 	}
 	
@@ -152,6 +153,7 @@ class Container
 	 */
 	public function handleException(\Exception $e)
 	{
+		$this->log("EXCEPTION: {$e->getMessage()}");
 		$this->error()->handleException($e);
 	}
 	
