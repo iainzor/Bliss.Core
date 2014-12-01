@@ -37,6 +37,7 @@ class Module extends \Bliss\Module\AbstractModule
 		$decorators = $this->decorators()->belongingTo($format);
 		
 		foreach ($decorators as $decorator) {
+			$this->app->log("Running decorator: ". get_class($decorator));
 			$contents = $decorator->decorate($contents, $params);
 		}
 		
@@ -62,10 +63,12 @@ class Module extends \Bliss\Module\AbstractModule
 	 */
 	private function _compileDecorators()
 	{
+		$this->app->log("Compiling view decorators");
 		$this->decorators = new Decorator\Registry();
 		
 		foreach ($this->app->modules() as $module) {
 			if ($module instanceof Decorator\ProviderInterface) {
+				$this->app->log("----Initializing decorators from module '{$module->name()}'");
 				$module->initViewDecorator($this->decorators);
 			}
 		}

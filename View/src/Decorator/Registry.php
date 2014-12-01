@@ -1,7 +1,8 @@
 <?php
 namespace View\Decorator;
 
-use Response\Format\FormatInterface;
+use Response\Format\FormatInterface,
+	Response\Format\DefaultFormat;
 
 class Registry
 {
@@ -61,7 +62,9 @@ class Registry
 		$found = [];
 		
 		foreach ($this->decorators as $decorator) {
-			if ($decorator["format"] === $format) {
+			$test = $decorator["format"];
+			
+			if ($test === $format || ($test === null && $format instanceOf DefaultFormat)) {
 				$found[] = $decorator["decorator"];
 			}
 		}
