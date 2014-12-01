@@ -28,6 +28,29 @@ class Registry
 	}
 	
 	/**
+	 * Clear decorators for a format.
+	 * If no format is provided, all decorators will be cleared
+	 * 
+	 * @param \Response\Format\FormatInterface $format
+	 */
+	public function clear(FormatInterface $format = null)
+	{
+		if ($format === null) {
+			$this->decorators = [];
+		} else {
+			$filtered = [];
+			
+			foreach ($this->decorators as $decorator) {
+				if ($decorator["format"] !== $format) {
+					$filtered[] = $decorator;
+				}
+			}
+			
+			$this->decorators = $filtered;
+		}
+	}
+	
+	/**
 	 * Get all decorators for a single response format
 	 * 
 	 * @param \Response\Format\FormatInterface $format

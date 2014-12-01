@@ -56,6 +56,18 @@ class String
 		
 		return $compiled;
 	}
+	
+	/**
+	 * Remove hyphens from a string, creating separate words
+	 * 
+	 * @param string $string
+	 * @param string $separator
+	 * @return string
+	 */
+	public static function unhyphenate($string, $separator = "-")
+	{
+		return str_replace($separator, " ", $string);
+	}
 
 	/**
 	 * Generate a random string
@@ -66,8 +78,10 @@ class String
 	public static function random($length = 7)
 	{
 		$length = (int) $length;
-		if ($length < 1) $length = 1;
-
+		if ($length < 1) {
+			$length = 1;
+		}
+		
 		$chars = range(0, 9) + range("a", "z");
 		$string = "";
 		for ($i = 0; $i < $length; $i++)
@@ -107,7 +121,9 @@ class String
 	 */
 	public static function formatSentences($str)
 	{
+		$str = str_replace("-", " ", $str);
 		$puncuation = array(".", "?", "!");
+		
 		foreach ($puncuation as $p) {
 			$parts = explode($p, $str);
 			foreach ($parts as $i => $part) {

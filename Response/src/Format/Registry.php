@@ -50,8 +50,12 @@ class Registry
 	 * @return \Response\Format\FormatInterface
 	 * @throws \Exception
 	 */
-	public function get($extension)
+	public function get($extension = null)
 	{
+		if ($extension === null) {
+			return $this->defaultFormat;
+		}
+		
 		if (!isset($this->formats[$extension])) {
 			$this->formats[$extension] = $this->_generate($extension);
 		}

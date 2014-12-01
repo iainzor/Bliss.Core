@@ -52,10 +52,6 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 			$this->_compileFormats();
 		}
 		
-		if ($extension === null) {
-			return $this->formats->defaultFormat();
-		}
-		
 		return $this->formats->get($extension);
 	}
 	
@@ -66,7 +62,7 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 	 */
 	public function defaultFormat()
 	{
-		return $this->formats->defaultFormat();
+		return $this->format(null);
 	}
 	
 	/**

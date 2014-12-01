@@ -26,11 +26,6 @@ class Container
 	private $logs = [];
 	
 	/**
-	 * @var array
-	 */
-	private $params = [];
-	
-	/**
 	 * Constructor
 	 */
 	public function __construct() 

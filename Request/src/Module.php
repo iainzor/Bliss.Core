@@ -24,7 +24,7 @@ class Module extends \Bliss\Module\AbstractModule
 	private $params;
 	
 	/**
-	 * Set the request's paramters
+	 * Merges parameters into the request
 	 * 
 	 * @param array $params
 	 */
