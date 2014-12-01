@@ -18,7 +18,7 @@ implements RouteProvider
 	 */
 	public function initRouter(\Router\Module $router) 
 	{
-		$router->when("/^([a-z0-9-]+)\/((css|js|img|elements)\/.*\.([a-z]+))$/i", [
+		$router->when("/^([a-z0-9-]+)\/((css|js|img|elements|bower_components)\/.*\.([a-z]+))$/i", [
 			1 => "moduleName",
 			2 => "path",
 			4 => "format"

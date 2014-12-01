@@ -29,11 +29,11 @@ class AssetController extends \Bliss\Controller\AbstractController
 				$compiler->compile($sourcePath)->save($filename);
 			}
 		} else {
-			$filename = $module->resolvePath("assets/{$prepend}{$path}");
+			$filename = $module->resolvePath("assets/{$path}");
 		}
 		
 		if (!is_file($filename)) {
-			throw new \Exception("File could not be found: {$prepend}{$path}", 404);
+			throw new \Exception("File could not be found: {$path}", 404);
 		}
 		
 		$modifiedTime = filemtime($filename);
