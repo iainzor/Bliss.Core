@@ -6,6 +6,22 @@
 
 <hr>
 
+<h2>Installation</h2>
+<h3>Clone it from GitHub</h3>
+<p class="lead">
+	<code>git clone --recursive https://github.com/iainzor/bliss [app-name]</code>
+</p>
+
+<h3>Navigate to</h3>
+<p class="lead">
+	<code>http://127.0.0.1/[app-name]/public</code>
+</p>
+<p>
+	<em>* This assumes you have a web server running on your local machine</em>
+</p>
+
+<hr>
+
 <h2>Modules</h2>
 <p>
 	A module can be as simple or as complex as you want.  A single module can be an entire application or just a simple
@@ -14,8 +30,9 @@
 	to the <code>/MyModule/src</code> directory for that namespace.
 </p>
 <p>
-	All modules must implement <code>Bliss\Module\ModuleInterface</code> or extend the abstract class 
-	<code>Bliss\Module\AbstractModule</code> which implements all necessary methods.
+	All modules must implement <code>Bliss\Module\ModuleInterface</code>. The abstract class 
+	<code>Bliss\Module\AbstractModule</code> can be extended as well.  This class implements all necessary methods, meaning
+	<code>MyModule\Module</code> can be as simple as <code>class Module extends \Bliss\Module\AbstractModule {}</code>.
 </p>
 <p>
 	By using the central application container <code>\Bliss\App\Container</code> you can retrieve other modules 
@@ -34,7 +51,8 @@
 <p>
 	If a controller extends <code>Bliss\Controller\AbstractController</code> it will be treated as a multi-action controller.  Using 
 	the <a href="./docs/modules/request">Request</a> module, the controller determines what method to execute based on the <code>action</code>
-	parameter.  Action methods must be formatted as <code>[actionName]Action</code> and default to <code>index</code> if no action is requested.
+	parameter.  Action methods must be formatted as <code>[actionName]Action</code>. If no action is in the Request, it will default 
+	to <code>index</code>.
 </p>
 
 <h3>Executing Controllers</h3>

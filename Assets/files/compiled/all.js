@@ -1,17 +1,20 @@
-/* Module: xzor */
-/* E:\Development\xZor/app\Xzor/assets/js\app.js */
-window.xzor = angular.module("xzor", ["ngRoute"]);
-window.xzor.config(["$locationProvider", function($locationProvider) {
+/* Module: bliss-app */
+/* E:\Development\Bliss/app\BlissApp/assets/js\app.js */
+var blissApp = angular.module("blissApp", ["ngRoute", "docs"]);
+
+blissApp.config(["$locationProvider", function($locationProvider) {
 	$locationProvider.html5Mode(true);
 }]);
 
-/* E:\Development\xZor/app\Xzor/assets/js\app\routes.js */
-window.xzor.config(["$routeProvider", function($routeProvider) {
-	
+/* E:\Development\Bliss/app\BlissApp/assets/js\app\routes.js */
+blissApp.config(["$routeProvider", function($routeProvider) {
+	$routeProvider.when("/", {
+		templateUrl: "./bliss-app/index/index.html"
+	});
 }]);
 
-/* E:\Development\xZor/app\Xzor/assets/js\app\controllers\RootCtrl.js */
-window.xzor.controller("RootCtrl", ["$scope", "$location", function($scope, $location) {
+/* E:\Development\Bliss/app\BlissApp/assets/js\app\controllers\RootCtrl.js */
+blissApp.controller("RootCtrl", ["$scope", "$location", function($scope, $location) {
 	$scope.$watch(function() { return $location.path(); }, function(path) {
 		$scope.path = path;
 	});
