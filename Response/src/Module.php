@@ -151,6 +151,9 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 		return true;
 	}
 	
+	/**
+	 * Sends a not modified header and exits the application
+	 */
 	public function notModified()
 	{
 		$protocol = filter_input(INPUT_SERVER, "SERVER_PROTOCOL");
@@ -167,19 +170,22 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 	 */
 	public function send(\Request\Module $request)
 	{
+		$format = $this->format($request->getFormat());
+		$view = $this->app->view();
+		$protocol = filter_input(INPUT_SERVER, "SERVER_PROTOCOL");
+		
 		if (!isset($this->body)) {
 			$this->body = $this->render($request);
 		}
 		
-		$this->app->log("Sending response");
+		$body = $view->decorate($this->body, $request->params(), $format);
 		
-		$format = $this->format($request->getFormat());
-		$protocol = filter_input(INPUT_SERVER, "SERVER_PROTOCOL");
+		$this->app->log("Sending response");
 		
 		header("Content-type: ". $format->mime());
 		header("{$protocol} {$this->code}");
 		
-		echo $this->body;
+		echo $body;
 	}
 	
 	/**

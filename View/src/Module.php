@@ -1,6 +1,8 @@
 <?php
 namespace View;
 
+use Response\Format\FormatInterface;
+
 class Module extends \Bliss\Module\AbstractModule
 {
 	/**
@@ -14,17 +16,13 @@ class Module extends \Bliss\Module\AbstractModule
 	 * @param \Request\Module $request
 	 * @param array $params Additional parameters to pass to the view
 	 * @return string
-	 * @throws \Exception
-	 * @throws \Exception
 	 */
 	public function render(\Request\Module $request, array $params = [])
 	{	
-		$response = $this->app->response();
 		$moduleName = $request->getModule();
 		$controllerName = $request->getController();
 		$actionName = $request->getAction();
 		$formatName = $request->getFormat();
-		$format = $response->format($formatName);
 		$module = $this->app->module($moduleName);
 		$extension = $formatName === null ? "phtml" : "{$formatName}.phtml";
 		$viewpath = $module->resolvePath(sprintf("views/%s/%s.%s",
@@ -34,12 +32,6 @@ class Module extends \Bliss\Module\AbstractModule
 		));
 		$partial = new Partial($viewpath, $this->app);
 		$contents = $partial->render($params);
-		$decorators = $this->decorators()->belongingTo($format);
-		
-		foreach ($decorators as $decorator) {
-			$this->app->log("Running decorator: ". get_class($decorator));
-			$contents = $decorator->decorate($contents, $params);
-		}
 		
 		return $contents;
 	}
@@ -56,6 +48,26 @@ class Module extends \Bliss\Module\AbstractModule
 		}
 		
 		return $this->decorators;
+	}
+	
+	/**
+	 * Run any decorators for a format on the contents provided
+	 *  
+	 * @param string $contents
+	 * @param array $params
+	 * @param \Response\Format\FormatInterface $format
+	 * @return string
+	 */
+	public function decorate($contents, array $params, FormatInterface $format)
+	{
+		$decorators = $this->decorators()->belongingTo($format);
+		
+		foreach ($decorators as $decorator) {
+			$this->app->log("Running decorator: ". get_class($decorator));
+			$contents = $decorator->decorate($contents, $params);
+		}
+		
+		return $contents;
 	}
 	
 	/**
