@@ -1,0 +1,40 @@
+/* Module: xzor */
+/* E:\Development\xZor/app\Xzor/assets/css\main.css */
+body {
+	font-family: "Roboto", Arial, sans-serif;
+	overflow-x: hidden;
+	background-color: #eee;
+}
+
+.page-header {
+	border-width: 5px;
+}
+
+.nav.nav-stacked:last-child {
+	margin-bottom: 20px;
+}
+
+
+
+/* Module: docs */
+/* E:\Development\Bliss/bliss/development\Docs/assets/css\module.css */
+#docs { text-align: justify; }
+
+	#docs ul.methods,
+	#docs ul.properties { padding-left: 0; }
+
+		#docs ul.methods > li,
+		#docs ul.properties > li {
+			list-style: none;
+			margin-bottom: 30px;
+		}
+		
+
+#toc {
+	float: right;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+
+

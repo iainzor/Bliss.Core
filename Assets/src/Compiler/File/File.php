@@ -51,7 +51,7 @@ class File
 		
 		if (!is_dir($dirname)) {	
 			$mask = umask(0);
-			$result = mkdir($dirname, 0777, true);
+			$result = @mkdir($dirname, 0777, true);
 			umask($mask);
 			
 			if ($result === false) {
