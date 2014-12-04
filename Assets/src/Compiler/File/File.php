@@ -49,8 +49,14 @@ class File
 	{
 		$dirname = pathinfo($path, PATHINFO_DIRNAME);
 		
-		if (!is_dir($dirname)) {
-			mkdir($dirname, 0777, true);
+		if (!is_dir($dirname)) {	
+			$mask = umask(0);
+			$result = mkdir($dirname, 0777, true);
+			umask($mask);
+			
+			if ($result === false) {
+				throw new \Exception("Could not create directory: {$dirname}");
+			}
 		}
 		
 		file_put_contents($path, $this->contents);
