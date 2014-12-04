@@ -41,7 +41,7 @@ class Registry implements \Iterator
 		$this->app->log("Registering '{$dirname}' as a directory containing modules");
 		
 		foreach (new \DirectoryIterator($dirname) as $dir) {
-			if ($dir->isDir() && !$dir->isDot()) {
+			if ($dir->isDir() && !$dir->isDot() && !preg_match("/^[\._]/", $dir->getFilename())) {
 				$this->registerModule($dir->getBasename(), $dir->getPathname());
 			}
 		}
