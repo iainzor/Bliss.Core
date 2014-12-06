@@ -15,33 +15,53 @@ class Component
 	 */
 	public function toArray()
 	{
-		$data = array();
 		$refClass = new \ReflectionClass($this);
 		$props = $refClass->getProperties(\ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC);
+		$data = call_user_func(function($properties) {
+			$data = [];
+			foreach ($properties as $property) {
+				$data[$property["name"]] = $property["value"];
+			}
+			return $data;
+		}, $this->properties);
 
 		foreach ($props as $refProp) {
 			$name = $refProp->getName();
-			$property = $this->{$name};
-
-			if (is_object($property) && method_exists($property, "toArray") ) {
-				$data[$name] = $property->toArray();
-			} else if ($property instanceOf \DateTime) {
-				$data[$name] = $property->getTimestamp();
-			} else if (method_exists($this, "get{$name}")) {
-				$data[$name] = call_user_func(array($this, "get{$name}"));
-			} else if (!is_object($property)) {
-				$data[$name] = $property;
-			}
-		}
-		
-		// Add any extra parameters to the array
-		foreach ($this->properties as $name => $value) {
-			if (!isset($data[$name])) {
-				$data[$name] = $value;
-			}
+			$value = $this->{$name};
+			
+			$data[$name] = $this->_parse($name, $value);
 		}
 		
 		return $data;
+	}
+	
+	/**
+	 * Parse a value based on its type
+	 * 
+	 * @param string $name
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	protected function _parse($name, $value)
+	{
+		$newValue = null;
+		
+		if (is_object($value) && method_exists($value, "toArray") ) {
+			$newValue = $value->toArray();
+		} else if ($value instanceOf \DateTime) {
+			$newValue = $value->getTimestamp();
+		} else if (method_exists($this, "get{$name}")) {
+			$newValue = call_user_func(array($this, "get{$name}"));
+		} else if (is_array($value)) {
+			$newValue = [];
+			foreach ($value as $n => $v) {
+				$newValue[$n] = $this->_parse($n, $v);
+			}
+		} else {
+			$newValue = $value;
+		}
+		
+		return $newValue;
 	}
 	
 	/**
@@ -54,43 +74,66 @@ class Component
 	public function __call($name, array $arguments) 
 	{
 		if (preg_match("/^set(.+)$/is", $name, $matches)) {
-			$propName = $matches[1];
-			$key = strtolower($propName);
-			$value = call_user_func(function($args) {
-				$value = isset($args[0]) ? $args[0] : null;
-				
-				if (preg_match("/^[0-9]+$/", $value)) {
-					$value = (int) $value;
-				} else if (preg_match("/^[0-9]*\.[0-9]+$/", $value)) {
-					$value = (float) $value;
-				}
-				
-				return $value;
-			}, $arguments);
-			
-			if (property_exists($this, $propName)) {
-				$this->{$propName} = $value;
-			} else {
-				$this->properties[$key] = $value;
-			}
+			$this->_set($matches[1], isset($arguments[0]) ? $arguments[0] : null);
 		} else if (preg_match("/^get(.*)$/i", $name, $matches)) {
-			$propName = $matches[1];
-			
-			if (property_exists($this, $propName)) {
-				return $this->{$propName};
-			} else {
-				$key = strtolower($propName);
-				
-				if (array_key_exists($key, $this->properties)) {
-					return $this->properties[$key];
-				} else {
-					throw new \Exception("Could not find property '{$propName}'");
-				}
-			}
+			return $this->_get($matches[1]);
 		} else {
 			throw new \Exception("Invalid method: ". get_class($this) ."::{$name}()");
 		}
 	}
+	
+	/**
+	 * Set a property
+	 * @param array $name
+	 * @param type $value
+	 */
+	private function _set($name, $value)
+	{
+		$name{0} = strtolower($name{0});
+		$key = strtolower($name);
+		
+		if (preg_match("/^[0-9]+$/", $value)) {
+			$value = (int) $value;
+		} else if (preg_match("/^[0-9]*\.[0-9]+$/", $value)) {
+			$value = (float) $value;
+		}
+
+		if (property_exists($this, $name)) {
+			$this->{$name} = $value;
+		} else {
+			$this->properties[$key] = [
+				"name" => $name,
+				"value" => $value
+			];
+		}
+	}
+	
+	/**
+	 * Attempt to get a property's value
+	 * 
+	 * @param array $name
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	private function _get($name)
+	{
+		$name{0} = strtolower($name{0});
+		$key = strtolower($name);
+		
+		if (property_exists($this, $name)) {
+			$ref = new \ReflectionProperty($this, $name);
+			if (!$ref->isPrivate()) {
+				return $this->{$name};
+			}
+		} else {
+			if (array_key_exists($key, $this->properties)) {
+				return $this->properties[$key]["value"];
+			} else {
+				throw new \Exception("Could not find property '{$name}'");
+			}
+		}
+	}
+	
 	/**
 	 * Generate a new instance of the calling class using late static binding
 	 * 

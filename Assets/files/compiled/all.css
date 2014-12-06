@@ -1,8 +1,9 @@
-/* Module: bliss-app */
-/* E:\Development\Bliss/app\BlissApp/assets/css\main.css */
+/* Module: xzor */
+/* E:\Development\xZor/app\Xzor/assets/css\main.css */
 body {
 	font-family: "Roboto", Arial, sans-serif;
 	overflow-x: hidden;
+	background-color: #eee;
 }
 
 .page-header {
@@ -17,7 +18,7 @@ body {
 
 /* Module: docs */
 /* E:\Development\Bliss/bliss/development\Docs/assets/css\module.css */
-#docs { text-align: justify; }
+#docs { text-align: justify; position: relative; }
 
 	#docs ul.methods,
 	#docs ul.properties { padding-left: 0; }
@@ -28,11 +29,27 @@ body {
 			margin-bottom: 30px;
 		}
 		
+	#docs .indent {
+		padding-left: 40px;
+	}
+		
 
 #toc {
-	float: right;
-	margin-left: 20px;
-	margin-bottom: 20px;
+	position: relative;
+}
+	#toc > .panel {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background-color: #fff;
+		z-index: 100;
+	}
+	
+	
+.class-method {
+	margin-bottom: 25px;
+	padding-bottom: 25px;
+	border-bottom: 1px solid #eee;
 }
 
 
