@@ -1,30 +1,75 @@
+/* Module: bliss */
+/* E:\Development\Bliss\bliss/core\Bliss/assets/js\app.js */
+var bliss = angular.module("bliss", [
+	"ngRoute",
+	"ngResource"
+]);
+
+bliss.config(["$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
+	$locationProvider.html5Mode(true);
+	
+	$routeProvider.otherwise({
+		templateUrl: "./bliss/welcome.html"
+	});
+}]);
+
+/* E:\Development\Bliss\bliss/core\Bliss/assets/js\app\controllers\bliss.AppCtrl.js */
+bliss.controller("bliss.AppCtrl", ["$scope", "$templateCache", "bliss.App", function($scope, $templateCache, App) {
+	$scope.loading = true;
+	$scope.pageError = false;
+	$scope.app = App.get({}, function() { $scope.loading = false; });
+	
+	$scope.clearPageError = function() { $scope.pageError = false; }
+	
+	$scope.$on("$routeChangeStart", function() {
+		$scope.pageError = false;
+	});
+	$scope.$on("$routeChangeError", function(e, route) {
+		$scope.pageError = {
+			message: "An error occurred while loading the page"
+		};
+	});
+}]);
+
+/* E:\Development\Bliss\bliss/core\Bliss/assets/js\app\services\bliss.App.js */
+bliss.service("bliss.App", ["$resource", function($resource) {
+	return $resource("./bliss/app.json");
+}]);
+
+
+
+/* Module: unifiedui */
+/* E:\Development\Bliss\bliss/web\UnifiedUI/assets/js\app.js */
+
+
+/* E:\Development\Bliss\bliss/web\UnifiedUI/assets/js\app\controllers\unifiedUI.LayoutCtrl.js */
+bliss.controller("unifiedUI.LayoutCtrl", ["$scope", function($scope) {
+	$scope.toggleMenu = function() {
+		$scope.menuOpen = !$scope.menuOpen;
+	};
+	
+	$scope.$on("$locationChangeStart", function() {
+		$scope.menuOpen = false;
+	});
+}]);
+
+
+
 /* Module: xzor */
 /* E:\Development\xZor/app\Xzor/assets/js\app.js */
-window.xzor = angular.module("xzor", ["ngRoute"]);
-window.xzor.config(["$locationProvider", function($locationProvider) {
+bliss.config(["$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
 	$locationProvider.html5Mode(true);
-}]);
-
-/* E:\Development\xZor/app\Xzor/assets/js\app\routes.js */
-window.xzor.config(["$routeProvider", function($routeProvider) {
 	
-}]);
-
-/* E:\Development\xZor/app\Xzor/assets/js\app\controllers\RootCtrl.js */
-window.xzor.controller("RootCtrl", ["$scope", "$location", function($scope, $location) {
-	$scope.$watch(function() { return $location.path(); }, function(path) {
-		$scope.path = path;
+	$routeProvider.when("/", {
+		templateUrl: "./index.html"
 	});
 }]);
 
 
 
 /* Module: docs */
-/* E:\Development\Bliss/bliss/development\Docs/assets/js\docs.js */
-var docs = angular.module("docs", ["ngRoute", "ngResource"]);
-
-/* E:\Development\Bliss/bliss/development\Docs/assets/js\docs\routes.js */
-docs.config(["$routeProvider", function($routeProvider) {
+/* E:\Development\Bliss/bliss/development\Docs/assets/js\app.js */
+bliss.config(["$routeProvider", function($routeProvider) {
 	var _moduleResolve = ["$resource", "$route", function($resource, $route) {
 		var id = $route.current.params.moduleId || "bliss";
 		var action = $route.current.params.action;
@@ -55,10 +100,10 @@ docs.config(["$routeProvider", function($routeProvider) {
 		
 		return r.query().$promise;
 	}];
-		
+	
 	$routeProvider.when("/docs", {
 		templateUrl: "./docs/modules/bliss.html",
-		controller: "module.IndexCtrl",
+		controller: "docs.module.IndexCtrl",
 		resolve: {
 			module: _moduleResolve,
 			modules: _moduleListResolve
@@ -70,7 +115,7 @@ docs.config(["$routeProvider", function($routeProvider) {
 			
 			return "./docs/modules/"+ id +"/"+ action +".html";
 		},
-		controller: "module.IndexCtrl",
+		controller: "docs.module.IndexCtrl",
 		resolve: {
 			module: _moduleResolve,
 			modules: _moduleListResolve
@@ -78,15 +123,43 @@ docs.config(["$routeProvider", function($routeProvider) {
 	});
 }]);
 
-/* E:\Development\Bliss/bliss/development\Docs/assets/js\docs\controllers\IndexCtrl.js */
-docs.controller("IndexCtrl", ["$scope", "modules", function($scope, modules) {
+/* E:\Development\Bliss/bliss/development\Docs/assets/js\app\controllers\IndexCtrl.js */
+bliss.controller("docs.IndexCtrl", ["$scope", "modules", function($scope, modules) {
 	$scope.modules = modules;
 }]);
 
-/* E:\Development\Bliss/bliss/development\Docs/assets/js\docs\controllers\module\IndexCtrl.js */
-docs.controller("module.IndexCtrl", ["$scope", "modules", "module", function($scope, modules, module) {
+/* E:\Development\Bliss/bliss/development\Docs/assets/js\app\controllers\module\IndexCtrl.js */
+bliss.controller("docs.module.IndexCtrl", ["$scope", "modules", "module", function($scope, modules, module) {
 	$scope.modules = modules;
 	$scope.module = module;
+}]);
+
+
+
+/* Module: tests */
+/* E:\Development\Bliss/bliss/development\Tests/assets/js\app.js */
+bliss.config(["$routeProvider", function($routeProvider) {
+	$routeProvider.when("/tests", {
+		templateUrl: "./tests.html",
+		controller: "tests.ResultCtrl",
+		resolve: {
+			result: ["tests.Result", function(Result) {
+				return Result.get().$promise;
+			}]
+		}
+	});
+}]);
+
+/* E:\Development\Bliss/bliss/development\Tests/assets/js\app\controllers\tests.ResultCtrl.js */
+bliss.controller("tests.ResultCtrl", ["$scope", "$sce", "result", function($scope, $sce, result) {
+	result.response = $sce.trustAsHtml(result.response);
+	
+	$scope.result = result;
+}]);
+
+/* E:\Development\Bliss/bliss/development\Tests/assets/js\app\services\tests.Result.js */
+bliss.service("tests.Result", ["$resource", function($resource) {
+	return $resource("./tests.json");
 }]);
 
 
