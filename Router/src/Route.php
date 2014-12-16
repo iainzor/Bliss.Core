@@ -36,6 +36,11 @@ class Route
 	private $params = [];
 	
 	/**
+	 * @var boolean
+	 */
+	private $isActive = true;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param string $route
@@ -143,4 +148,8 @@ class Route
 			? $this->params[self::PARAM_ACTION]
 			: null;
 	}
+	
+	public function isActive() { return $this->isActive; }
+	public function enable() { $this->isActive = true; }
+	public function disable() { $this->isActive = false; }
 }

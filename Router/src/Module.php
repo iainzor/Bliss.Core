@@ -37,7 +37,7 @@ implements ProviderInterface
 		$result = null;
 		
 		foreach ($this->routes as $route) {
-			if ($route->matches($test)) {
+			if ($route->isActive() && $route->matches($test)) {
 				if (!isset($result)) {
 					$result = $route;
 				} else if ($route->priority() >= $result->priority()) {
@@ -51,6 +51,8 @@ implements ProviderInterface
 		} else {
 			$this->app->log("Route found using: ". $result->route());
 		}
+		
+		$result->disable();
 		
 		return $result;
 	}

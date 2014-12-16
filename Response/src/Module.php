@@ -174,11 +174,15 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 		$view = $this->app->view();
 		$protocol = filter_input(INPUT_SERVER, "SERVER_PROTOCOL");
 		
-		if (!isset($this->body)) {
-			$this->body = $this->render($request);
+		try {
+			if (!isset($this->body)) {
+				$this->body = $this->render($request);
+			}
+
+			$body = $view->decorate($this->body, $request->params(), $format);
+		} catch (\Exception $e) {
+			$body = $e->getMessage();
 		}
-		
-		$body = $view->decorate($this->body, $request->params(), $format);
 		
 		$this->app->log("Sending response");
 		

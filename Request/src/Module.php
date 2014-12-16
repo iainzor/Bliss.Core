@@ -24,6 +24,31 @@ class Module extends \Bliss\Module\AbstractModule
 	private $params;
 	
 	/**
+	 * @var string
+	 */
+	private $uri;
+	
+	/**
+	 * Set the requested URI
+	 * 
+	 * @param string $uri
+	 */
+	public function setUri($uri)
+	{
+		$this->uri = $uri;
+	}
+	
+	/**
+	 * Get the requested URI
+	 * 
+	 * @return string
+	 */
+	public function uri()
+	{
+		return $this->uri;
+	}
+	
+	/**
 	 * Merges parameters into the request
 	 * 
 	 * @param array $params
