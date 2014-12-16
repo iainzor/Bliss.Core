@@ -1,13 +1,8 @@
 <?php
 namespace Error;
 
-class Module extends \Bliss\Module\AbstractModule
-implements ErrorHandlerInterface
+class Module extends \Bliss\Module\AbstractModule implements ErrorHandlerInterface
 {
-	const NAME = "error";
-	
-	public function getName() { return self::NAME; }
-	
 	public function handleError($number, $string, $file, $line)
 	{
 		throw new \Exception("Error '{$string}' in file '{$file}' on line '{$line}'", $number);
