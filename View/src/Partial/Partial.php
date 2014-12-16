@@ -1,5 +1,5 @@
 <?php
-namespace View;
+namespace View\Partial;
 
 use Bliss\App\Container as App;
 
@@ -77,7 +77,7 @@ class Partial
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function render(array $params)
+	public function render(array $params = [])
 	{
 		$this->params = $params;
 		

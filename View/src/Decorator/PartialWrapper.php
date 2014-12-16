@@ -1,27 +1,27 @@
 <?php
 namespace View\Decorator;
 
-use View\Partial;
+use View\Partial\Partial;
 
 class PartialWrapper implements DecoratorInterface
 {
 	/**
-	 * @var string
+	 * @var \View\Partial
 	 */
-	private $filename;
+	private $partial;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param string $filename
+	 * @param \View\Partial $partial
 	 */
-	public function __construct($filename)
+	public function __construct(Partial $partial)
 	{
-		$this->filename = $filename;
+		$this->partial = $partial;
 	}
 	
 	/**
-	 * Wrap the contents in with a view partial
+	 * Wrap the contents with a view partial
 	 * 
 	 * @param string $contents
 	 * @param array $params
@@ -29,9 +29,8 @@ class PartialWrapper implements DecoratorInterface
 	 */
 	public function decorate($contents, array $params = [])
 	{
-		$partial = new Partial($this->filename);
-		$partial->setContents($contents);
+		$this->partial->setContents($contents);
 		
-		return $partial->render($params);
+		return $this->partial->render($params);
 	}
 }

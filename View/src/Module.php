@@ -11,6 +11,11 @@ class Module extends \Bliss\Module\AbstractModule
 	private $decorators;
 	
 	/**
+	 * @var boolean
+	 */
+	private $initInjectables = false;
+	
+	/**
 	 * Attempt to render data for a set of paramters and return the resulting string
 	 * 
 	 * @param \Request\Module $request
@@ -19,6 +24,10 @@ class Module extends \Bliss\Module\AbstractModule
 	 */
 	public function render(\Request\Module $request, array $params = [])
 	{	
+		if (!$this->initInjectables) {
+			$this->_initInjectables();
+		}
+		
 		$moduleName = $request->getModule();
 		$controllerName = $request->getController();
 		$actionName = $request->getAction();
@@ -30,7 +39,7 @@ class Module extends \Bliss\Module\AbstractModule
 			$actionName,
 			$extension
 		));
-		$partial = new Partial($viewpath, $this->app);
+		$partial = new Partial\Partial($viewpath, $this->app);
 		$contents = $partial->render($params);
 		
 		return $contents;
@@ -82,6 +91,18 @@ class Module extends \Bliss\Module\AbstractModule
 			if ($module instanceof Decorator\ProviderInterface) {
 				$this->app->log("----Initializing decorators from module '{$module->name()}'");
 				$module->initViewDecorator($this->decorators);
+			}
+		}
+	}
+	
+	/**
+	 * Initialize all injectable modules
+	 */
+	private function _initInjectables()
+	{
+		foreach ($this->app->modules() as $module) {
+			if ($module instanceof Partial\InjectableInterface) {
+				$module->compileInjectables();
 			}
 		}
 	}
