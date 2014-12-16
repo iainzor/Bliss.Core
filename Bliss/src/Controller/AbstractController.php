@@ -53,4 +53,16 @@ abstract class AbstractController implements ControllerInterface
 		
 		return call_user_func([$this, $methodName]);
 	}
+	
+	/**
+	 * Attempt to get a parameter from the Request
+	 * 
+	 * @param string $name
+	 * @param mixed $defaultValue
+	 * @return mixed
+	 */
+	public function param($name, $defaultValue = null)
+	{
+		return $this->app->request()->param($name, $defaultValue);
+	}
 }

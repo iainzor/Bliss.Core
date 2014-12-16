@@ -7,8 +7,9 @@ use Bliss\AutoLoader,
 
 require_once dirname(__DIR__) ."/AutoLoader.php";
 require_once dirname(__DIR__) ."/Module/Registry.php";
+require_once dirname(__DIR__) ."/Component.php";
 
-class Container 
+class Container extends \Bliss\Component
 {
 	/**
 	 * @var \Bliss\AutoLoader
@@ -26,12 +27,30 @@ class Container
 	private $logs = [];
 	
 	/**
-	 * Constructor
+	 * @var string
 	 */
-	public function __construct() 
+	protected $name;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param string $name The name of the application
+	 */
+	public function __construct($name = null) 
 	{
+		$this->name = $name;
 		$this->autoloader = new AutoLoader();
 		$this->modules = new ModuleRegistry($this);
+	}
+	
+	/**
+	 * Set the name of the application
+	 * 
+	 * @param string $name
+	 */
+	public function setTitle($name)
+	{
+		$this->name = $name;
 	}
 	
 	/**

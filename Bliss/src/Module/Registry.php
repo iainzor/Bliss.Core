@@ -1,8 +1,7 @@
 <?php
 namespace Bliss\Module;
 
-use Bliss\App\Container as App,
-	Bliss\String;
+use Bliss\App\Container as App;
 
 class Registry implements \Iterator
 {
@@ -63,10 +62,10 @@ class Registry implements \Iterator
 		$this->app->autoloader()->registerNamespace($namespace, $dirname ."/src");
 		$this->app->log("Registering module '{$namespace}'");
 		
-		$moduleName = String::hyphenate($namespace);
+		$alias = strtolower(preg_replace("/[^a-z0-9]/i", "", $namespace));
 		$className = $namespace ."\\Module";
 		
-		$this->modules[$moduleName] = [
+		$this->modules[$alias] = [
 			"className" => $className,
 			"rootPath" => $dirname,
 			"instance" => null
@@ -82,8 +81,10 @@ class Registry implements \Iterator
 	 */
 	public function get($moduleName)
 	{
-		if (isset($this->modules[$moduleName])) {
-			$config = $this->modules[$moduleName];
+		$alias = strtolower(preg_replace("/[^a-z0-9]/i", "", $moduleName));
+		
+		if (isset($this->modules[$alias])) {
+			$config = $this->modules[$alias];
 			$instance = $config["instance"];
 			
 			if ($instance === null) {
@@ -94,10 +95,12 @@ class Registry implements \Iterator
 				$instance = new $className($this->app, $rootPath, $moduleName);
 
 				if (!($instance instanceof ModuleInterface)) {
-					throw new \Exception("Module '{$moduleName}' must be an instance of Bliss\\Module\\ModuleInterface");
+					throw new \Exception("Module '{$instance->name()}' must be an instance of Bliss\\Module\\ModuleInterface");
 				}
 				
-				$this->modules[$moduleName]["instance"] = $instance;
+				$instance->init();
+				
+				$this->modules[$alias]["instance"] = $instance;
 			}
 			
 			return $instance;
