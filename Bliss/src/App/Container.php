@@ -56,7 +56,7 @@ class Container extends \Bliss\Component
 	/**
 	 * Get the application's module registry
 	 * 
-	 * @return \Bliss\Module\Registry
+	 * @return \Bliss\Module\ModuleInterface[]
 	 */
 	public function modules()
 	{
@@ -183,5 +183,23 @@ class Container extends \Bliss\Component
 		$moduleName = String::hyphenate($name);
 		$module = $this->module($moduleName);
 		return $module;
+	}
+	
+	/**
+	 * Override toArray to add each module with a public config to the exported array
+	 * 
+	 * @return array
+	 */
+	public function toArray() 
+	{
+		$data = parent::toArray();
+		
+		foreach ($this->modules() as $module) {
+			if ($module instanceof \Config\PublicConfigInterface) {
+				$data[$module->name()] = $module->publicConfig()->toArray();
+			}
+		}
+		
+		return $data;
 	}
 }

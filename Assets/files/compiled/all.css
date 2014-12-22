@@ -49,6 +49,7 @@ body {
 	font-family: "Roboto", Arial, sans-serif;
 	margin: 60px 0 0 0;
 	background-color: #eee;
+	transition: all .3s ease-in-out;
 }
 
 /* E:\Development\Bliss\bliss/web\UnifiedUI/assets/css\elements\headers.css */
@@ -94,7 +95,7 @@ p {
 	color: #fff;
 	padding: 10px;
 	z-index: 800;
-	transition: padding .3s ease-in-out;
+	transition: all .3s ease-in-out;
 }
 	#header a { text-decoration: none; color: #fff; }
 	
@@ -203,18 +204,10 @@ p {
 	}
 }
 
+/* E:\Development\Bliss\bliss/web\UnifiedUI/assets/css\themes\theme-bluegray.css */
+.theme-bluegray body { background-color: #263238; }
 
-
-/* Module: xzor */
-/* E:\Development\xZor/app\Xzor/assets/css\ids\header.css */
-#header {
-	background-color: #607D8B;
-}
-
-/* E:\Development\xZor/app\Xzor/assets/css\tags\body.css */
-body {
-	background-color: #263238;
-}
+.theme-bluegray #header { background-color: #607D8B; }
 
 
 

@@ -11,16 +11,16 @@ class Module extends \Bliss\Module\AbstractModule
 	/**
 	 * Get a configuration object for a namespace
 	 * 
-	 * @param string $namespace
+	 * @param string $name
 	 * @return \Config\Config
 	 */
-	public function get($namespace)
+	public function get($name)
 	{
 		if (!isset($this->config)) {
 			$this->_compileConfig();
 		}
 		
-		return $this->config->get($namespace);
+		return $this->config->get($name);
 	}
 	
 	/**
@@ -33,18 +33,9 @@ class Module extends \Bliss\Module\AbstractModule
 		$this->config = new Config();
 		
 		foreach ($this->app->modules() as $module) {
-			$filename = $module->resolvePath("config/module.php");
-			$data = [];
+			$config = $module->config();
 			
-			if (is_file($filename)) {
-				$data = include $filename;	
-			}
-			
-			if (!is_array($data)) {
-				throw new \UnexpectedValueException("Module configuration file for ". $module->name() ." must return an array");
-			}
-			
-			$this->config->set($module->name(), $data);
+			$this->config->set($module->name(), $config);
 			
 			if ($module instanceof ProviderInterface) {
 				$module->initConfig($this->config);

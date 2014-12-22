@@ -55,18 +55,6 @@ bliss.controller("unifiedUI.LayoutCtrl", ["$scope", function($scope) {
 
 
 
-/* Module: xzor */
-/* E:\Development\xZor/app\Xzor/assets/js\app.js */
-bliss.config(["$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
-	$locationProvider.html5Mode(true);
-	
-	$routeProvider.when("/", {
-		templateUrl: "./index.html"
-	});
-}]);
-
-
-
 /* Module: docs */
 /* E:\Development\Bliss/bliss/development\Docs/assets/js\app.js */
 bliss.config(["$routeProvider", function($routeProvider) {

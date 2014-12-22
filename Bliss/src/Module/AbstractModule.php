@@ -118,13 +118,20 @@ abstract class AbstractModule implements ModuleInterface
 	 */
 	public function config($namespace = null)
 	{
-		$appConfig = $this->app->config();
-		$moduleConfig = $appConfig->get($this->name());
+		if (!isset($this->config)) {
+			$this->config = new \Config\Config();
+			
+			$file = $this->resolvePath("config/module.php");
+			if (is_file($file)) {
+				$data = include $file;
+				$this->config->setData($data);
+			}
+		}
 		
 		if ($namespace !== null) {
-			return $moduleConfig->get($namespace);
+			return $this->config->get($namespace);
 		} else {
-			return $moduleConfig;
+			return $this->config;
 		}
 	}
 }
