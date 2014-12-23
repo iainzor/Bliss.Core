@@ -1,6 +1,8 @@
 <?php
 namespace Error;
 
+use Response\Format\InvalidFormatException;
+
 class Module extends \Bliss\Module\AbstractModule implements ErrorHandlerInterface
 {
 	public function handleError($number, $string, $file, $line)
@@ -10,6 +12,8 @@ class Module extends \Bliss\Module\AbstractModule implements ErrorHandlerInterfa
 
 	public function handleException(\Exception $e) 
 	{
+		ob_end_clean();
+		
 		$response = $this->app->response();
 		$request = $this->app->request();
 		$formatName = $request->getFormat();
@@ -24,7 +28,7 @@ class Module extends \Bliss\Module\AbstractModule implements ErrorHandlerInterfa
 				break;
 		}
 		
-		if ($e instanceof \Response\Format\InvalidFormatException || !$format->requiresView()) {
+		if ($e instanceof InvalidFormatException || !$format->requiresView()) {
 			$request->setFormat(null);
 		}
 		

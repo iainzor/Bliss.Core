@@ -86,7 +86,12 @@ class Partial
 		}
 		
 		ob_start();
-		include $this->filename;
-		return ob_get_clean();
+		try {
+			include $this->filename;
+			return ob_get_clean();
+		} catch (\Exception $e) {
+			ob_end_clean();
+			throw $e;
+		}
 	}
 }

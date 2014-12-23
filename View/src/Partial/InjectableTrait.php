@@ -47,11 +47,7 @@ trait InjectableTrait
 		
 		foreach ($partials as $data) {
 			$partial = $data["partial"];
-			try {
-				$partialContents = $partial->render();
-			} catch (\Exception $e) {
-				die($e->getMessage());
-			}
+			$partialContents = $partial->render();
 			$contents .= "{$partialContents}\n";
 		}
 		
