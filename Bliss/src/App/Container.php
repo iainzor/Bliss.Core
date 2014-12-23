@@ -32,15 +32,32 @@ class Container extends \Bliss\Component
 	protected $name;
 	
 	/**
+	 * @var string
+	 */
+	private $rootPath;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param string $name The name of the application
 	 */
-	public function __construct($name = null) 
+	public function __construct($name, $rootPath) 
 	{
 		$this->name = $name;
+		$this->rootPath = $rootPath;
 		$this->autoloader = new AutoLoader();
 		$this->modules = new ModuleRegistry($this);
+	}
+	
+	/**
+	 * Resolve the path to the partial path relative to the application root directory
+	 * 
+	 * @param string $partial
+	 * @return string
+	 */
+	public function resolvePath($partial)
+	{
+		return $this->rootPath ."/". $partial;
 	}
 	
 	/**

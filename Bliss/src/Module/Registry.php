@@ -16,6 +16,16 @@ class Registry implements \Iterator
 	private $modules = [];
 	
 	/**
+	 * @var array
+	 */
+	private $dirs = [];
+	
+	/**
+	 * @var boolean
+	 */
+	private $isCache = false;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param \Bliss\App\Container $app
@@ -23,6 +33,12 @@ class Registry implements \Iterator
 	public function __construct(App $app)
 	{
 		$this->app = $app;
+		$this->_loadCache();
+	}
+	
+	public function __destruct() 
+	{
+		$this->_saveCache();
 	}
 	
 	/**
@@ -33,11 +49,15 @@ class Registry implements \Iterator
 	 */
 	public function registerModulesDirectory($dirname)
 	{
+		if (in_array($dirname, $this->dirs)) {
+			return;
+		}
 		if (!is_dir($dirname)) {
 			throw new \Exception("Invalid directory: {$dirname}");
 		}
 		
 		$this->app->log("Registering '{$dirname}' as a directory containing modules");
+		$this->dirs[] = $dirname;
 		
 		foreach (new \DirectoryIterator($dirname) as $dir) {
 			if ($dir->isDir() && !$dir->isDot() && !preg_match("/^[\._]/", $dir->getFilename())) {
@@ -117,5 +137,47 @@ class Registry implements \Iterator
 		public function next() { return next($this->modules); }
 		public function rewind() { return reset($this->modules); }
 		public function valid() { $key = key($this->modules); return $key !== null && $key !== false; }
-
+	
+	/**
+	 * Attempt to load the cached registry
+	 */
+	private function _loadCache()
+	{
+		$file = $this->app->resolvePath("bliss.modules");
+		if (is_file($file)) {
+			$data = unserialize(file_get_contents($file));
+			
+			if (is_array($data) && !empty($data)) {
+				$this->dirs = $data["dirs"];
+				$this->modules = $data["modules"];
+				$this->isCache = true;
+				
+				foreach ($this->modules as $module) {
+					$namespace = preg_replace("/^(.*)\\\\Module$/i", "\\1", $module["className"]);
+					$this->app->autoloader()->registerNamespace($namespace, $module["rootPath"] ."/src");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Cache the registry's data
+	 */
+	private function _saveCache()
+	{
+		$data = [
+			"dirs" => $this->dirs
+		];
+		$modules = [];
+		foreach ($this->modules as $alias => $module) {
+			$modules[$alias] = [
+				"className" => $module["className"],
+				"rootPath" => $module["rootPath"],
+				"instance" => null
+			];
+		}
+		$data["modules"] = $modules;
+		
+		file_put_contents($this->app->resolvePath("/bliss.modules"), serialize($data));
+	}
 }
