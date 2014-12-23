@@ -143,7 +143,7 @@ class Registry implements \Iterator
 	 */
 	private function _loadCache()
 	{
-		$file = $this->app->resolvePath("bliss.modules");
+		$file = $this->app->resolvePath("/cache/bliss.modules");
 		if (is_file($file)) {
 			$data = unserialize(file_get_contents($file));
 			
@@ -178,6 +178,6 @@ class Registry implements \Iterator
 		}
 		$data["modules"] = $modules;
 		
-		file_put_contents($this->app->resolvePath("/bliss.modules"), serialize($data));
+		file_put_contents($this->app->resolvePath("/cache/bliss.modules"), serialize($data));
 	}
 }
