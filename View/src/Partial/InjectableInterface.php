@@ -3,7 +3,7 @@ namespace View\Partial;
 
 interface InjectableInterface
 {
-	public function inject($area, Partial $partial);
+	public function inject($area, Partial $partial, $order = 0);
 	
 	public function compileInjectables();
 	
