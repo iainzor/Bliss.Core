@@ -28,7 +28,7 @@ class Module extends \Bliss\Module\AbstractModule implements ErrorHandlerInterfa
 				break;
 		}
 		
-		if ($e instanceof InvalidFormatException || !$format->requiresView()) {
+		if ($e instanceof InvalidFormatException) {
 			$request->setFormat(null);
 		}
 		
