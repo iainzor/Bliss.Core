@@ -52,8 +52,6 @@ implements ProviderInterface
 			$this->app->log("Route found using: ". $result->route());
 		}
 		
-		$result->disable();
-		
 		return $result;
 	}
 	
