@@ -57,7 +57,7 @@ class AssetController extends \Bliss\Controller\AbstractController
 		$request = $this->app->request();
 		$response = $this->app->response();
 		$formatName = $request->getFormat();
-		$filename = $this->module->resolvePath("files/compiled/all.{$formatName}");
+		$filename = $this->app->resolvePath("cache/assets/compiled/all.{$formatName}");
 		$compiler = $this->module->compiler();
 		
 		if ($compiler->isEnabled()) {
