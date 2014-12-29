@@ -70,7 +70,7 @@ class Component
 	 * 
 	 * @param string $name
 	 * @param array $arguments
-	 */
+	 
 	public function __call($name, array $arguments) 
 	{
 		if (preg_match("/^set(.+)$/is", $name, $matches)) {
@@ -81,6 +81,7 @@ class Component
 			throw new \Exception("Invalid method: ". get_class($this) ."::{$name}()");
 		}
 	}
+	*/
 	
 	/**
 	 * Set a property
@@ -157,8 +158,7 @@ class Component
 	final public static function populate(Component $component, array $properties)
 	{
 		foreach ($properties as $name => $value) {
-			$method = "set{$name}";
-			call_user_func([$component, $method], $value);
+			call_user_func([$component, $name], $value);
 		}
 		
 		return $component;

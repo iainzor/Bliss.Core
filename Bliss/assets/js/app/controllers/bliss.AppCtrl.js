@@ -1,27 +1,26 @@
-bliss.controller("bliss.AppCtrl", ["$scope", "$location", "bliss.App", function($scope, $location, App) {
+bliss.controller("bliss.AppCtrl", ["$rootScope", "bliss.App", function($scope, App) {
+	$scope.app = bliss.app 
+		? angular.extend(bliss.app, {ready:true})
+		: App.get({}, function(app) {
+			app.ready = true;
+		});
+	
 	$scope.loading = true;
 	$scope.pageError = false;
-	$scope.app = App.get({}, function() { $scope.loading = false; });
-	
+	$scope.pageTitle = function() { return $scope.app.name; };
 	$scope.clearPageError = function() { $scope.pageError = false; };
 	
-	$scope.$on("$routeChangeStart", function() {
+	$scope.$on("$locationChangeStart", function() {
 		$scope.pageError = false;
+		$scope.app.loading = true;
 	});
-	$scope.$on("$routeChangeError", function(e, route) {
+	$scope.$on("$routeChangeSuccess", function() {
+		$scope.app.loading = false;
+	});
+	$scope.$on("$routeChangeError", function() {
+		$scope.app.loading = false;
 		$scope.pageError = {
 			message: "An error occurred while loading the page"
 		};
 	});
-	$scope.$on("$locationChangeSuccess", function() {
-		if ($scope.app.pages) {
-			var people = $scope.app.pages[2];
-			var person = people.pages[1];
-			var r = new RegExp(person.match);
-			
-			if (r.test($location.path())) {
-				console.log("Yes!");
-			}
-		}
-	}, true);
 }]);
