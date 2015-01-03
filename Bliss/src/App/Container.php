@@ -210,10 +210,14 @@ class Container extends \Bliss\Component
 	public function toArray() 
 	{
 		$data = parent::toArray();
+		$modules = clone $this->modules();
 		
-		foreach ($this->modules() as $module) {
+		foreach ($modules as $module) {
 			if ($module instanceof \Config\PublicConfigInterface) {
-				$data[$module->name()] = $module->publicConfig()->toArray();
+				$config = new \Config\Config();
+				$module->populatePublicConfig($config);
+				
+				$data[$module->name()] = $config->toArray();
 			}
 		}
 		
