@@ -55,7 +55,7 @@ class Container extends \Bliss\Component
 	 * @param string $partial
 	 * @return string
 	 */
-	public function resolvePath($partial)
+	public function resolvePath($partial = null)
 	{
 		return $this->rootPath ."/". $partial;
 	}
