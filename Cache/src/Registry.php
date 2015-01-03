@@ -73,8 +73,7 @@ class Registry
 				"resourceName" => $resourceName,
 				"resourceId" => $resourceId,
 				"params" => $params,
-				"contents" => $data,
-				"isValid" => true
+				"contents" => $data
 			]);
 		}
 		

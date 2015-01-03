@@ -1,13 +1,8 @@
 <?php
 namespace Cache\Storage;
 
-use Cache\Resource\Resource,
-	Cache\Resource\ResourceInterface;
-
 class MemcacheStorage implements StorageInterface
 {
-	use UtilitiesTrait;
-	
 	/**
 	 * @var \Memcache
 	 */

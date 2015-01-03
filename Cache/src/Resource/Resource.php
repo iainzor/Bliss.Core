@@ -26,11 +26,6 @@ class Resource extends Component implements ResourceInterface
 	protected $contents;
 	
 	/**
-	 * @var boolean
-	 */
-	protected $isValid = false;
-	
-	/**
 	 * Get or set the cache's resource name
 	 * 
 	 * @param string $resourceName
@@ -84,24 +79,8 @@ class Resource extends Component implements ResourceInterface
 	{
 		if ($contents !== null) {
 			$this->contents = $contents;
-			$this->isValid = true;
 		}
 		
 		return $this->contents;
-	}
-	
-	/**
-	 * Get or set whether the cache is valid
-	 * 
-	 * @param boolean $flag
-	 * @return boolean
-	 */
-	public function isValid($flag = null) 
-	{
-		if ($flag !== null) {
-			$this->isValid = (boolean) $flag;
-		}
-		
-		return $this->isValid;
 	}
 }
