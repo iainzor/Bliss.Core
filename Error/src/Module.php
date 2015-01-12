@@ -16,15 +16,13 @@ class Module extends \Bliss\Module\AbstractModule implements ErrorHandlerInterfa
 		
 		$response = $this->app->response();
 		$request = $this->app->request();
-		$formatName = $request->getFormat();
-		$format = $response->format($formatName);
+		$code = $e->getCode();
 		
-		switch ($e->getCode()) {
-			case 404:
-				$response->setCode(404);
-				break;
+		switch ($code) {
+			case 0: 
+				$code = 500;
 			default:
-				$response->setCode(500);
+				$response->setCode($code);
 				break;
 		}
 		
