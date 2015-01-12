@@ -199,7 +199,12 @@ class Container extends \Bliss\Component
 	{
 		$moduleName = String::hyphenate($name);
 		$module = $this->module($moduleName);
-		return $module;
+		
+		if (method_exists($module, $name)) {
+			return call_user_func_array([$module, $name], $arguments);
+		} else {
+			return $module;
+		}
 	}
 	
 	/**

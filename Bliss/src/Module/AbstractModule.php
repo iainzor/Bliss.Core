@@ -134,4 +134,20 @@ abstract class AbstractModule implements ModuleInterface
 			return $this->config;
 		}
 	}
+	
+	/**
+	 * Forward unknown calls to the application
+	 * 
+	 * @param string $name
+	 * @param array $arguments
+	 * @return AbstractModule
+	 */
+	public function __call($name, array $arguments) 
+	{
+		try {
+			return call_user_func_array([$this->app, $name], $arguments);
+		} catch (\Exception $e) {
+			throw new \Exception("Invalid method: ". get_class($this) ."::{$name}()", 500, $e);
+		}
+	}
 }
