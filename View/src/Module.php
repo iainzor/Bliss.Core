@@ -25,6 +25,7 @@ class Module extends \Bliss\Module\AbstractModule
 	public function render(\Request\Module $request, array $params = [])
 	{	
 		if (!$this->initInjectables) {
+			$this->initInjectables = true;
 			$this->_initInjectables();
 		}
 		
@@ -33,7 +34,7 @@ class Module extends \Bliss\Module\AbstractModule
 		$actionName = $request->getAction();
 		$formatName = $request->getFormat();
 		$module = $this->app->module($moduleName);
-		$extension = $formatName === null ? "phtml" : "{$formatName}.phtml";
+		$extension = $formatName === null ? "html.phtml" : "{$formatName}.phtml";
 		$viewpath = $module->resolvePath(sprintf("views/%s/%s.%s",
 			$controllerName,
 			$actionName,

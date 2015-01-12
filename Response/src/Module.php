@@ -46,7 +46,7 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 	 * @param string $extension
 	 * @return \Response\Format\FormatInterface
 	 */
-	public function format($extension)
+	public function format($extension = null)
 	{
 		if (!isset($this->formats)) {
 			$this->_compileFormats();
@@ -62,7 +62,7 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 	 */
 	public function defaultFormat()
 	{
-		return $this->format(null);
+		return $this->format();
 	}
 	
 	/**
@@ -197,8 +197,6 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 	public function render(\Request\Module $request)
 	{
 		$this->app->log("Rendering request");
-		
-		$request = $this->app->request();
 		$view = $this->app->view();
 		
 		try {

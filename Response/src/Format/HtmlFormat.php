@@ -14,5 +14,7 @@ class HtmlFormat implements FormatInterface
 		if (!$body) {
 			throw new \Exception("HTML format cannot render responses with empty bodies");
 		}
+		
+		return $body;
 	}
 }
