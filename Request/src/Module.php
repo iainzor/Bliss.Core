@@ -28,6 +28,18 @@ class Module extends \Bliss\Module\AbstractModule
 	 */
 	private $uri;
 	
+	public function init()
+	{
+		$input = file_get_contents("php://input");
+		if (strlen($input)) {
+			$dataArray = json_decode($input, true);
+
+			if (is_array($dataArray)) {
+				$this->_defaultParams += $dataArray;
+			}
+		}
+	}
+	
 	/**
 	 * Set the requested URI
 	 * 
@@ -101,6 +113,36 @@ class Module extends \Bliss\Module\AbstractModule
 	 * Set the request's parameters to the default values
 	 */
 	public function reset() { $this->params = $this->_defaultParams; }
+	
+	/**
+	 * Get the requested method
+	 * 
+	 * @return string
+	 */
+	public function method()
+	{
+		return filter_input(INPUT_SERVER, "REQUEST_METHOD");
+	}
+	
+	/**
+	 * Check if a POST request has been made
+	 * 
+	 * @return boolean
+	 */
+	public function isPost()
+	{
+		return $this->method() === "POST";
+	}
+	
+	/**
+	 * Check if a DELETE request has been made
+	 * 
+	 * @return boolean
+	 */
+	public function isDelete()
+	{
+		return $this->method() === "DELETE";
+	}
 	
 	/**
 	 * Getters and setters
