@@ -4,11 +4,6 @@ namespace Bliss;
 class Component
 {
 	/**
-	 * @var array
-	 */
-	private $properties = [];
-	
-	/**
 	 * Convert the component's properties to an array
 	 *
 	 * @return array
@@ -17,17 +12,36 @@ class Component
 	{
 		$refClass = new \ReflectionClass($this);
 		$props = $refClass->getProperties(\ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC);
-		$data = call_user_func(function($properties) {
-			$data = [];
-			foreach ($properties as $property) {
-				$data[$property["name"]] = $property["value"];
-			}
-			return $data;
-		}, $this->properties);
+		$data = [];
 
 		foreach ($props as $refProp) {
 			$name = $refProp->getName();
 			$value = $this->{$name};
+			
+			$data[$name] = $this->_parse($name, $value);
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * Returns only the properties that aren't instances of Component
+	 * 
+	 * @return array
+	 */
+	public function toBasicArray()
+	{
+		$refClass = new \ReflectionClass($this);
+		$props = $refClass->getProperties(\ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC);
+		$data = [];
+
+		foreach ($props as $refProp) {
+			$name = $refProp->getName();
+			$value = $this->{$name};
+			
+			if ($value instanceof Component) {
+				continue;
+			}
 			
 			$data[$name] = $this->_parse($name, $value);
 		}
@@ -50,8 +64,8 @@ class Component
 			$newValue = $value->toArray();
 		} else if ($value instanceOf \DateTime) {
 			$newValue = $value->getTimestamp();
-		} else if (method_exists($this, "get{$name}")) {
-			$newValue = call_user_func(array($this, "get{$name}"));
+		} else if (method_exists($this, $name)) {
+			$newValue = call_user_func(array($this, $name));
 		} else if (is_array($value)) {
 			$newValue = [];
 			foreach ($value as $n => $v) {

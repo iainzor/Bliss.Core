@@ -1,14 +1,17 @@
 bliss.controller("bliss.AppCtrl", ["$rootScope", "bliss.App", function($scope, App) {
-	$scope.app = bliss.app 
-		? angular.extend(bliss.app, {ready:true})
-		: App.get({}, function(app) {
-			app.ready = true;
-		});
+	App.init();
 	
-	$scope.loading = true;
+	$scope.app = App.config();
 	$scope.pageError = false;
 	$scope.pageTitle = function() { return $scope.app.name; };
 	$scope.clearPageError = function() { $scope.pageError = false; };
+	
+	$scope.loading = function(flag) {
+		if (typeof(flag) !== "undefined") {
+			$scope.app.loading = flag ? true : false;
+		}
+		return $scope.app.loading;
+	};
 	
 	$scope.$on("$locationChangeStart", function() {
 		$scope.pageError = false;

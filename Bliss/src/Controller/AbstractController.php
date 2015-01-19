@@ -75,10 +75,6 @@ abstract class AbstractController implements ControllerInterface
 	 */
 	public function __call($name, array $arguments) 
 	{
-		try {
-			return call_user_func_array([$this->module, $name], $arguments);
-		} catch (\Exception $e) {
-			throw new \Exception("Invalid method: ". get_class($this) ."::{$name}()", 500, $e);
-		}
+		return call_user_func_array([$this->module, $name], $arguments);
 	}
 }

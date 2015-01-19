@@ -60,4 +60,27 @@ abstract class AbstractTable
 		
 		return $this->db->fetchRow("SELECT * FROM `". $this->name() ."` {$where}", $params);
 	}
+	
+	/**
+	 * Insert a record into the database table
+	 * 
+	 * @param array $data
+	 * @return int The ID of the inserted data
+	 */
+	public function insert(array $data)
+	{
+		$fields = [];
+		$values = [];
+		foreach ($data as $field => $value) {
+			$fields[] = "`". $field ."`";
+			$values[] = $this->db->quote($value);
+		}
+		
+		$fieldList = "(". implode(",", $fields) .")";
+		$valueList = "(". implode(",", $values) .")";
+		$statement = $this->db->prepare("INSERT INTO `". $this->name() ."` {$fieldList} VALUES {$valueList}");
+		$statement->execute();
+		
+		return $this->db->lastInsertId();
+	}
 }

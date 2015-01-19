@@ -21,7 +21,7 @@ class Module extends \Bliss\Module\AbstractModule
 	/**
 	 * @var array
 	 */
-	private $params;
+	private $params = [];
 	
 	/**
 	 * @var string
@@ -36,6 +36,13 @@ class Module extends \Bliss\Module\AbstractModule
 
 			if (is_array($dataArray)) {
 				$this->_defaultParams += $dataArray;
+			}
+		}
+		
+		if ($this->isPost()) {
+			$postVars = filter_input_array(INPUT_POST);
+			if ($postVars) {
+				$this->_defaultParams += $postVars;
 			}
 		}
 	}
