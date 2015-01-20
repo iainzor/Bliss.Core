@@ -177,8 +177,16 @@ class Module extends \Bliss\Module\AbstractModule implements Format\ProviderInte
 		if (!isset($this->body)) {
 			$this->body = $this->render($request);
 		}
-
-		$body = $view->decorate($this->body, $request->params(), $format);
+		
+		try {
+			$body = $view->decorate($this->body, $request->params(), $format);
+		} catch (\Exception $e) {
+			$body = "<pre>"
+				  . "<h1>Error</h1>"
+				  . "<h2>{$e->getMessage()}</h2>"
+				  . $e->getTraceAsString()
+				  . "</pre>";
+		}
 		
 		$this->app->log("Sending response");
 		
