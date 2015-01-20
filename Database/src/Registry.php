@@ -45,7 +45,7 @@ class Registry
 	public function generateConnection()
 	{
 		if ($this->totalServers() === 0) {
-			throw new \Exception("No connections have been registered");
+			throw new \Exception("No database connections have been registered");
 		}
 		
 		$config = $this->servers[array_rand($this->servers)];
