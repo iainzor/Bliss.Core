@@ -21,7 +21,9 @@ class Module extends AbstractModule
 		
 		if (!isset($this->connection)) {
 			$registry = $this->_generateRegistry();
-			$this->connection = $registry->generateConnection();
+			$this->connection = $registry->generateConnection(
+				$this->config(Config::SECTION_DEFAULT_CONNECTION)
+			);
 		}
 		
 		return $this->connection;

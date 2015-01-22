@@ -39,20 +39,24 @@ class Registry
 	/**
 	 * Generate a random connection using the available servers
 	 * 
+	 * @param \Config\Config $defaultConnection Optional default connection to use if no servers have been added
 	 * @return \Database\PDO
 	 * @throws \Exception
 	 */
-	public function generateConnection()
+	public function generateConnection(\Config\Config $defaultConnection = null)
 	{
-		if ($this->totalServers() === 0) {
+		if ($this->totalServers() === 0 && $defaultConnection === null) {
 			throw new \Exception("No database connections have been registered");
+		} else if ($defaultConnection !== null) {
+			$config = $defaultConnection->toArray();
+		} else {
+			$config = $this->servers[array_rand($this->servers)];
 		}
 		
-		$config = $this->servers[array_rand($this->servers)];
 		$options = array_replace([
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-		], $config["options"]);
+		], isset($config[Config::CONF_OPTIONS]) ? $config[Config::CONF_OPTIONS] : []);
 		
-		return new PDO($config["dsn"], $config["username"], $config["password"], $options);
+		return new PDO($config[Config::CONF_DSN], $config[Config::CONF_USER], $config[Config::CONF_PASSWORD], $options);
 	}
 }
