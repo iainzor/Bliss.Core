@@ -19,6 +19,20 @@ class Config
 	}
 	
 	/**
+	 * Get or set the configuration's data
+	 * 
+	 * @param array $data
+	 * @return array
+	 */
+	public function data(array $data = null)
+	{
+		if ($data !== null) {
+			$this->setData($data);
+		}
+		return $this->data;
+	}
+	
+	/**
 	 * Set the data of the config
 	 * 
 	 * @param array $data
@@ -69,6 +83,44 @@ class Config
 		return $value;
 	}
 	
+	/**
+	 * Recursively merge the config with an array 
+	 * 
+	 * @param array $data
+	 */
+	public function merge(array $data)
+	{
+		foreach ($data as $name => $value) {
+			$existing = $this->get($name);
+			
+			if ($existing) {
+				$this->mergeExisting($name, $value);
+			} else {
+				$this->set($name, $value);
+			}
+		}
+	}
+	
+	/**
+	 * Merge data with an existing value in the config
+	 * 
+	 * @param string $name
+	 * @param mixed $newValue
+	 */
+	private function mergeExisting($name, $newValue)
+	{
+		$value = $this->get($name);
+		
+		if ($value instanceof Config && is_array($newValue)) {
+			$value->merge($newValue);
+		} else if (is_array($value)) {
+			$newValue = array_merge($value, $newValue);
+			$this->set($name, $newValue);
+		} else {
+			$this->set($name, $newValue);
+		}
+	}
+	
 	public function __get($name) 
 	{
 		return $this->get($name);
@@ -87,6 +139,10 @@ class Config
 				$data[$name] = $value->toArray();
 			} else {
 				$data[$name] = $value;
+			}
+			
+			if (is_array($data[$name]) && empty($data[$name])) {
+				unset($data[$name]);
 			}
 		}
 		return $data;

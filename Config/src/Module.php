@@ -14,13 +14,17 @@ class Module extends \Bliss\Module\AbstractModule
 	 * @param string $name
 	 * @return \Config\Config
 	 */
-	public function get($name)
+	public function get($name = null)
 	{
 		if (!isset($this->config)) {
 			$this->_compileConfig();
 		}
 		
-		return $this->config->get($name);
+		if ($name !== null) {
+			return $this->config->get($name);
+		} else {
+			return $this->config;
+		}
 	}
 	
 	/**
@@ -33,6 +37,9 @@ class Module extends \Bliss\Module\AbstractModule
 		$this->config = new Config();
 		
 		foreach ($this->app->modules() as $module) {
+			if ($module === $this) {
+				continue;
+			}
 			$config = $module->config();
 			
 			$this->config->set($module->name(), $config);
