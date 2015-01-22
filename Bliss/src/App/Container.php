@@ -11,6 +11,11 @@ require_once dirname(__DIR__) ."/Component.php";
 
 class Container extends \Bliss\Component
 {
+	const ENV_DEVELOPMENT = "development";
+	const ENV_PRODUCTION = "production";
+	const ENV_STAGING = "staging";
+	const ENV_TESTING = "testing";
+	
 	/**
 	 * @var \Bliss\AutoLoader
 	 */
@@ -35,6 +40,16 @@ class Container extends \Bliss\Component
 	 * @var string
 	 */
 	private $rootPath;
+	
+	/**
+	 * @var string
+	 */
+	private $environment = self::ENV_PRODUCTION;
+	
+	/**
+	 * @var \Config\Config
+	 */
+	private $config;
 	
 	/**
 	 * Constructor
@@ -68,6 +83,20 @@ class Container extends \Bliss\Component
 	public function setTitle($name)
 	{
 		$this->name = $name;
+	}
+	
+	/**
+	 * Get or set the application's environment
+	 * 
+	 * @param string $env
+	 * @return string
+	 */
+	public function environment($env = null)
+	{
+		if ($env !== null) {
+			$this->environment = $env;
+		}
+		return $this->environment;
 	}
 	
 	/**
@@ -140,6 +169,8 @@ class Container extends \Bliss\Component
 	 */
 	public function execute(array $params = [])
 	{
+		$this->loadConfig();
+		
 		$this->log("Executing parameters: ". json_encode($params));
 		
 		$response = $this->response();
@@ -189,6 +220,43 @@ class Container extends \Bliss\Component
 	}
 	
 	/**
+	 * Get the application's configuration object
+	 * 
+	 * @return \Config\Config
+	 */
+	public function config() 
+	{
+		if (!isset($this->config)) {
+			$this->loadConfig();
+		}
+		return $this->config;
+	}
+	
+	/**
+	 * Load all available configuration files into the current application's 
+	 * config object
+	 */
+	public function loadConfig()
+	{
+		$this->config = $this->module("config")->get();
+		
+		$files = [
+			"config/app.php", 
+			"config/app-". $this->environment .".php",
+			"config/private/app.php",
+			"config/private/app-". $this->environment .".php"
+		];
+		foreach ($files as $file) {
+			$path = $this->resolvePath($file);
+			
+			if (is_file($path)) {
+				$data = include $path;
+				$this->config->merge($data);
+			}
+		}
+	}
+	
+	/**
 	 * Attempt to load modules dynamically 
 	 * 
 	 * @param string $name
@@ -201,10 +269,13 @@ class Container extends \Bliss\Component
 		$module = $this->module($moduleName);
 		
 		if (method_exists($module, $name)) {
-			return call_user_func_array([$module, $name], $arguments);
-		} else {
-			return $module;
+			$refMethod = new \ReflectionMethod($module, $name);
+			if ($refMethod->getDeclaringClass()->getName() === get_class($module)) {
+				return call_user_func_array([$module, $name], $arguments);
+			}
 		}
+			
+		return $module;
 	}
 	
 	/**
