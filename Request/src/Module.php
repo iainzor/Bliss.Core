@@ -28,6 +28,11 @@ class Module extends \Bliss\Module\AbstractModule
 	 */
 	private $uri;
 	
+	/**
+	 * @var string
+	 */
+	private $baseUrl;
+	
 	public function init()
 	{
 		$input = file_get_contents("php://input");
@@ -114,6 +119,20 @@ class Module extends \Bliss\Module\AbstractModule
 	public function set($name, $value)
 	{
 		$this->params[$name] = $value;
+	}
+	
+	/**
+	 * Get or set the request's base URL
+	 * 
+	 * @param string $baseUrl
+	 * @return string
+	 */
+	public function baseUrl($baseUrl = null)
+	{
+		if ($baseUrl !== null) {
+			$this->baseUrl = $baseUrl;
+		}
+		return $this->baseUrl;
 	}
 	
 	/**
