@@ -21,6 +21,12 @@ class Component
 			$data[$name] = $this->_parse($name, $value);
 		}
 		
+		/*
+		foreach ($refClass->getConstants() as $name => $value) {
+			$data["_constants"][$name] = $value;
+		}
+		*/
+		
 		return $data;
 	}
 	
@@ -66,13 +72,15 @@ class Component
 			$newValue = $value->getTimestamp();
 		} else if (method_exists($this, $name)) {
 			$newValue = call_user_func(array($this, $name));
-		} else if (is_array($value)) {
-			$newValue = [];
-			foreach ($value as $n => $v) {
-				$newValue[$n] = $this->_parse($n, $v);
-			}
 		} else {
 			$newValue = $value;
+		}
+		
+		if (is_array($newValue)) {
+			$parsed = [];
+			foreach ($newValue as $n => $v) {
+				$parsed[$n] = $this->_parse($n, $v);
+			}
 		}
 		
 		return $newValue;

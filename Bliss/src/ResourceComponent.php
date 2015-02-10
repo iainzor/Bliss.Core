@@ -11,7 +11,7 @@ abstract class ResourceComponent extends Component implements Resource\ResourceI
 	/**
 	 * @var string
 	 */
-	protected $resourceName;
+	protected $RESOURCE_NAME;
 	
 	/**
 	 * @var int
@@ -66,12 +66,14 @@ abstract class ResourceComponent extends Component implements Resource\ResourceI
 	public function resourceName($resourceName = null) 
 	{
 		if ($resourceName !== null) {
-			$this->resourceName = $resourceName;
-		} else if (!isset($this->resourceName)) {
-			$this->resourceName = $this->getResourceName();
+			$this->RESOURCE_NAME = $resourceName;
+		} else if (!isset($this->RESOURCE_NAME)) {
+			$this->RESOURCE_NAME = $this->getResourceName();
 		}
-		return $this->resourceName;
+		return $this->RESOURCE_NAME;
 	}
+	
+	final public function resource_name() { return $this->resourceName(); }
 	
 	/**
 	 * Get or set the UNIX timestamp of when the resource was created

@@ -3,7 +3,16 @@ bliss.controller("bliss.AppCtrl", ["$rootScope", "bliss.App", function($scope, A
 	
 	$scope.app = App.config();
 	$scope.pageError = false;
-	$scope.pageTitle = function() { return $scope.app.name; };
+	$scope.pageTitle = function() { 
+		var title = App.config().name;
+		var pageTitle = App.page() ? App.page().title : false;
+		
+		if (pageTitle) {
+			title = pageTitle +" - "+ title;
+		}
+		
+		return title;
+	};
 	$scope.clearPageError = function() { $scope.pageError = false; };
 	
 	$scope.loading = function(flag) {
